@@ -28,6 +28,7 @@ type IDCard struct {
 type Teacher struct {
 	gorm.Model
 	TeacherName string `gorm:"type:varchar(90)"`
+	TeachName string `gorm:"type:varchar(90);default:''"`
 	Students    []Student  `gorm:"many2many:student_teachers;"`
 	Class []Class `gorm:"many2many:class_teachers;"`
 }
