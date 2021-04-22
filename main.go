@@ -72,10 +72,29 @@ func main() {
 	})
 
 
+   //获取老师任课信息
 	r.GET("/teacher", func(context *gin.Context) {
 		teacherName := context.DefaultQuery("name", "Guest") // 此方法可以设置默认值
 		var data []model.Teacher
 		database.DB.Select([]string{"TeacherName","TeachName","CreatedAt","ID","UpdatedAt"}).Where("teacher_name = ?", teacherName).First(&data)
+		context.JSON(200, gin.H{
+			"code":200,
+			"message": "ok",
+			"data":data,
+		})
+	})
+
+
+   //获取老师所属学生
+	r.GET("/teacherStuList", func(context *gin.Context) {
+		teacherName := context.DefaultQuery("name", "Guest") // 此方法可以设置默认值
+
+
+		//关联查询（多对多）
+		var data model.Teacher
+		database.DB.Model(model.Teacher{}).Where("teacher_name = ?",teacherName).First(&data)
+		database.DB.Model(&data).Association("Students").Find(&data.Students)
+
 		context.JSON(200, gin.H{
 			"code":200,
 			"message": "ok",
